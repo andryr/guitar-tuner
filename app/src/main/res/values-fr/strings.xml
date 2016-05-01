@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2016 andryr
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <string name="app_name">Guitar Tuner</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="drop_d_tuning">Drop D</string>
+    <string name="open_a_tuning">Open A</string>
+    <string name="open_d_tuning">Open D</string>
+    <string name="open_g_tuning">Open G</string>
+    <string name="pref_dark_theme_title">Thème sombre</string>
+    <string name="pref_tuning_title">Accordage</string>
+    <string name="standard_tuning">Standard</string>
+    <string name="title_activity_settings">Paramètres</string>
+    <string name="permission">Autorisation</string>
+    <string name="permission_record_audio">L\'application doit pouvoir accéder au microphone.</string>
+    <string name="audio_record_init_error">AudioRecord n\'a pas pu être initialisé.</string>
+</resources>

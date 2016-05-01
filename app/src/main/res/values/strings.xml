@@ -1,0 +1,62 @@
+<!--
+  ~ Copyright 2016 andryr
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <string name="app_name">Guitar Tuner</string>
+    <string name="title_activity_settings">Settings</string>
+
+
+    <string name="pref_dark_theme_key" translatable="false">pref_dark_theme</string>
+    <string name="pref_dark_theme_title">Dark theme</string>
+    <string name="pref_tuning_key" translatable="false">pref_tuning</string>
+    <string name="pref_tuning_title">Tuning</string>
+
+    <string name="action_settings">Settings</string>
+
+
+    <!-- Tuning names -->
+    <string name="standard_tuning">Standard</string>
+    <string name="open_a_tuning">Open A</string>
+    <string name="open_g_tuning">Open G</string>
+    <string name="open_d_tuning">Open D</string>
+    <string name="drop_d_tuning">Drop D</string>
+
+    <string name="standard_tuning_val" translatable="false">Standard</string>
+    <string name="open_a_tuning_val" translatable="false">Open A</string>
+    <string name="open_g_tuning_val" translatable="false">Open G</string>
+    <string name="open_d_tuning_val" translatable="false">Open D</string>
+    <string name="drop_d_tuning_val" translatable="false">Drop D</string>
+    
+    <string-array name="pref_tuning_entries">
+        <item>@string/standard_tuning</item>
+        <item>@string/open_a_tuning</item>
+        <item>@string/open_g_tuning</item>
+        <item>@string/open_d_tuning</item>
+        <item>@string/drop_d_tuning</item>
+    </string-array>
+
+    <string-array name="pref_tuning_values">
+        <item>@string/standard_tuning_val</item>
+        <item>@string/open_a_tuning_val</item>
+        <item>@string/open_g_tuning_val</item>
+        <item>@string/open_d_tuning_val</item>
+        <item>@string/drop_d_tuning_val</item>
+    </string-array>
+    <string name="permission">Permission</string>
+    <string name="permission_record_audio">The app must be able to use the microphone.</string>
+    <string name="audio_record_init_error">Could not initialize AudioRecord.</string>
+
+</resources>

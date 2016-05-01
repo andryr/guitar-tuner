@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,9 +34,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class TunerActivity extends AppCompatActivity {
+
+    private static final String TAG = TunerActivity.class.getCanonicalName();
 
     public static final String STATE_NEEDLE_POS = "needle_pos";
     public static final String STATE_PITCH_INDEX = "pitch_index";
@@ -45,11 +50,10 @@ public class TunerActivity extends AppCompatActivity {
 
     private Tuning mTuning;
     private AudioProcessor mAudioProcessor;
-    private Executor mExecutor = Executors.newSingleThreadExecutor();
+    private ExecutorService mExecutor = Executors.newSingleThreadExecutor();
     private NeedleView mNeedleView;
     private TuningView mTuningView;
     private TextView mFrequencyView;
-    private ImageView mGoodPitchView;
 
     private boolean mProcessing = false;
 
@@ -60,11 +64,26 @@ public class TunerActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        if(Utils.checkPermission(this, Manifest.permission.RECORD_AUDIO)) {
+            startAudioProcessing();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mProcessing) {
+            mAudioProcessor.stop();
+            mProcessing = false;
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    private void requestPermissions() {
         if (!Utils.checkPermission(this, Manifest.permission.RECORD_AUDIO)) {
 
             // Should we show an explanation?
@@ -75,7 +94,7 @@ public class TunerActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         ActivityCompat.requestPermissions(TunerActivity.this,
-                                new String[]{Manifest.permission.READ_CONTACTS},
+                                new String[]{Manifest.permission.RECORD_AUDIO},
                                 PERMISSION_REQUEST_RECORD_AUDIO);
                     }
                 });
@@ -83,11 +102,9 @@ public class TunerActivity extends AppCompatActivity {
             } else {
 
                 ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_CONTACTS},
+                        new String[]{Manifest.permission.RECORD_AUDIO},
                         PERMISSION_REQUEST_RECORD_AUDIO);
             }
-        } else {
-            startAudioProcessing();
         }
     }
 
@@ -111,7 +128,9 @@ public class TunerActivity extends AppCompatActivity {
             return;
 
 
-        mAudioProcessor = new AudioProcessor(new AudioProcessor.PitchDetectionListener() {
+        mAudioProcessor = new AudioProcessor();
+        mAudioProcessor.init();
+        mAudioProcessor.setPitchDetectionListener(new AudioProcessor.PitchDetectionListener() {
             @Override
             public void onPitchDetected(final float freq, double avgIntensity) {
 
@@ -130,13 +149,15 @@ public class TunerActivity extends AppCompatActivity {
                         mFrequencyView.setText(String.format("%.02fHz", freq));
 
 
-                        final View goodPitchView = mGoodPitchView;
-                        if (goodPitch) {
-                            if (goodPitchView.getVisibility() != View.VISIBLE) {
-                                Utils.reveal(goodPitchView);
+                        final View goodPitchView = findViewById(R.id.good_pitch_view);
+                        if (goodPitchView != null) {
+                            if (goodPitch) {
+                                if (goodPitchView.getVisibility() != View.VISIBLE) {
+                                    Utils.reveal(goodPitchView);
+                                }
+                            } else if (goodPitchView.getVisibility() == View.VISIBLE) {
+                                Utils.hide(goodPitchView);
                             }
-                        } else if (goodPitchView.getVisibility() == View.VISIBLE) {
-                            Utils.hide(goodPitchView);
                         }
                     }
                 });
@@ -155,10 +176,6 @@ public class TunerActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (mProcessing) {
-            mAudioProcessor.stop();
-        }
-
     }
 
     @SuppressLint("DefaultLocale")
@@ -184,8 +201,9 @@ public class TunerActivity extends AppCompatActivity {
         mFrequencyView = (TextView) findViewById(R.id.frequency_view);
         mFrequencyView.setText(String.format("%.02fHz", mTuning.pitches[0].frequency));
 
-        mGoodPitchView = (ImageView) findViewById(R.id.good_pitch_view);
-        mGoodPitchView.setColorFilter(primaryTextColor);
+        ImageView goodPitchView = (ImageView) findViewById(R.id.good_pitch_view);
+        goodPitchView.setColorFilter(primaryTextColor);
+        requestPermissions();
 
     }
 

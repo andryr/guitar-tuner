@@ -26,6 +26,8 @@ import android.util.Log;
  */
 public class AudioProcessor implements Runnable {
 
+    private static final String TAG = AudioProcessor.class.getCanonicalName();
+
     private static final int[] SAMPLE_RATES = {44100, 22050, 16000, 11025, 8000};
 
 
@@ -39,11 +41,12 @@ public class AudioProcessor implements Runnable {
     private PitchDetectionListener mPitchDetectionListener;
     private boolean mStop = false;
 
-    public AudioProcessor(PitchDetectionListener pitchDetectionListener) {
+
+    public void setPitchDetectionListener(PitchDetectionListener pitchDetectionListener) {
         mPitchDetectionListener = pitchDetectionListener;
     }
 
-    private void initializeAudioRecord() {
+    public void init() {
         int bufSize = 16384;
         int avalaibleSampleRates = SAMPLE_RATES.length;
         int i = 0;
@@ -55,17 +58,24 @@ public class AudioProcessor implements Runnable {
             }
             i++;
         }
-        while (i < avalaibleSampleRates && mAudioRecord != null && mAudioRecord.getState() != AudioRecord.STATE_INITIALIZED);
+        while (i < avalaibleSampleRates && (mAudioRecord == null || mAudioRecord.getState() != AudioRecord.STATE_INITIALIZED));
     }
 
     public void stop() {
         mStop = true;
+        mAudioRecord.stop();
+        mAudioRecord.release();
     }
 
     @Override
     public void run() {
-        initializeAudioRecord();
 
+
+        Log.d(TAG, "sampleRate="+mAudioRecord.getSampleRate());
+
+        if(mAudioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
+            Log.e(TAG, "AudioRecord not initialized");
+        }
 
         mAudioRecord.startRecording();
         int bufSize = 8192;
@@ -88,8 +98,8 @@ public class AudioProcessor implements Runnable {
                 }
             }
         } while (!mStop);
-        mAudioRecord.stop();
-        mAudioRecord.release();
+
+        Log.d(TAG, "Thread terminated");
     }
 
     private double averageIntensity(short[] data, int frames) {

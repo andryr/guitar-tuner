@@ -81,12 +81,15 @@ public class AudioProcessor implements Runnable {
         int bufSize = 8192;
         final int sampleRate = mAudioRecord.getSampleRate();
         final short[] buffer = new short[bufSize];
+
         do {
             final int read = mAudioRecord.read(buffer, 0, bufSize);
             if (read > 0) {
                 final double intensity = averageIntensity(buffer, read);
 
-                if (intensity >= 50 && zeroCrossing(buffer) <= 250) {
+                int maxZeroCrossing = (int) (250 * (read / 8192) * (sampleRate / 44100.0));
+
+                if (intensity >= 50 && zeroCrossingCount(buffer) <= maxZeroCrossing) {
 
                     float freq = getPitch(buffer, read / 4, read, sampleRate, 50, 500);
                     if (Math.abs(freq - mLastComputedFreq) <= 5f) {
@@ -112,7 +115,7 @@ public class AudioProcessor implements Runnable {
 
     }
 
-    private int zeroCrossing(short[] data) {
+    private int zeroCrossingCount(short[] data) {
         int len = data.length;
         int count = 0;
         boolean prevValPositive = data[0] >= 0;

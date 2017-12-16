@@ -137,6 +137,7 @@ public class AudioProcessor implements Runnable {
 
         int minSum = Integer.MAX_VALUE;
         int minSumLag = 0;
+        int[] sums = new int[Math.round(maxOffset) + 2];
 
         for (int lag = (int) minOffset; lag <= maxOffset; lag++) {
             int sum = 0;
@@ -149,13 +150,18 @@ public class AudioProcessor implements Runnable {
                 sum += Math.abs(sample - data[i]);
             }
 
+            sums[lag] = sum;
+
             if (sum < minSum) {
                 minSum = sum;
                 minSumLag = lag;
             }
         }
 
-        return sampleRate / minSumLag;
+		// quadratic interpolation
+		float delta = (float) (sums[minSumLag + 1] - sums[minSumLag - 1]) / ((float)
+			(2 * (2 * sums[minSumLag] - sums[minSumLag + 1] - sums[minSumLag - 1])));
+		return sampleRate / (minSumLag + delta);
     }
 
 

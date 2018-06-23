@@ -29,4 +29,5 @@
     <string name="permission">Autorisation</string>
     <string name="permission_record_audio">L\'application doit pouvoir accéder au microphone.</string>
     <string name="audio_record_init_error">AudioRecord n\'a pas pu être initialisé.</string>
+    <string name="pref_privacy_policy_title">Politique de confidentialité</string>
 </resources>

@@ -1,3 +1,8 @@
+---
+layout: page
+title: Privacy Policy
+permalink: /privacy/
+---
 # Privacy Policy
 
 Andryr built the Guitar Tuner app as an Open Source app. This SERVICE is provided by Andryr at no cost and is intended for use as is.
